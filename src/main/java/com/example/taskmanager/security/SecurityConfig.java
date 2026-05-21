@@ -32,8 +32,11 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        // Permitem accesul la pagina principală și la rutele de eroare Spring
+                        .requestMatchers("/", "/error").permitAll()
                         .requestMatchers("/auth/register", "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/tasks").hasRole("ADMIN")
+                        // Am schimbat din hasRole("ADMIN") în hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/tasks").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/tasks/**").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/tasks/**").hasAnyRole("USER", "ADMIN")
